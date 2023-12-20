@@ -1,21 +1,37 @@
-// TODO solve without performing bfs for every query
-
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <map>
+#include <queue>
+#include <set>
+
 using namespace std;
 
 int main() {
-
-    long N, W, D;
+    int N, W, D;
     cin >> N >> W >> D;
 
     map<int, vector<int>> graph;
     for (int i = 0; i < W; i++) {
         int A, B;
         cin >> A >> B;
-        graph[A].push_back(B);
+        graph[B].push_back(A);
+    }
+
+    vector<int> dist(N+1, 1e9);
+    dist[N] = 0;
+
+    queue<int> q;
+    q.push(N);
+    while (!q.empty()) {
+        int next = q.front();
+        q.pop();
+        for (int k = 0; k < graph[next].size(); k++) {
+            int u = graph[next][k];
+            if (dist[u] == 1e9 || dist[next] + 1 < dist[u]) {
+                dist[u] = dist[next] + 1;
+                q.push(u);
+            }
+        }
     }
 
     vector<int> route(N+1);
@@ -23,45 +39,24 @@ int main() {
         cin >> route[i];
     }
 
+    set<pair<int, int>> sorting;
+    for (int i = 0; i <= N; i++) {
+        sorting.insert(make_pair(dist[route[i]]+i, i));
+    }
+
     for (int i = 0; i < D; i++) {
         int X, Y;
         cin >> X >> Y;
 
+        sorting.erase(make_pair(dist[route[X]]+X, X));
+        sorting.erase(make_pair(dist[route[Y]]+Y, Y));
+
         swap(route[X], route[Y]);
 
-        queue<int> q;
-        vector<int> dist(N + 1, -1);
-        dist[1] = 0;
+        sorting.insert(make_pair(dist[route[X]]+X, X));
+        sorting.insert(make_pair(dist[route[Y]]+Y, Y));
 
-        int max = 1;
-        while (route[max] != N) {
-            q.push(route[max]);
-            dist[route[max]] = max-1;
-            max++;
-        }
-        q.push(route[max]);
-        dist[route[max]] = max-1;
-        max--;
-
-        while (!q.empty()) {
-            int next = q.front();
-            q.pop();
-            for (long k = 0; k < graph[next].size(); k++) {
-                int t = graph[next][k];
-                if (dist[t] == -1 || dist[next] + 1 < dist[t]) {
-                    dist[t] = dist[next] + 1;
-                    if (t == N) {
-                        if (dist[t] < max) {
-                            max = dist[t];
-                        }
-                    } else {
-                        q.push(t);
-                    }
-                }
-            }
-        }
-
-        cout << max << endl;
+        cout << sorting.begin()->first-1 << endl;
 
     }
 
