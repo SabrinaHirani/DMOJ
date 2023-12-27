@@ -1,7 +1,8 @@
-// TODO fix
+// TODO subtask #3 + #4
 
 #include <iostream>
-#include <string>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -11,38 +12,56 @@ int main() {
 
     K = K-N;
 
-    int size = 0;
+    vector<int> result;
 
-    string result;
+    int value = 1;
+    while (result.size() < N) {
 
-    while (size < N) {
+        if (K != 0) {
 
-        int x = 1;
-        int z = -1;
-        while (true) {
-            result += to_string(x)+' ';
-            size++;
-            x++;
-            z += x;
-
-            if (x > M || z >= K || size >= N) {
-                cout << (x > M) << endl;
-                cout << (z >= K) << endl;
-                cout << (size >= N) << endl;
+            if (K < 0) {
                 break;
             }
 
-        }
+            if (result.size() >= K+1) {
 
-        K = max(0, K-x-1);
+                int temp = min(K, M-1);
+
+                value = result[result.size()-temp-1];
+                K -= temp;
+
+            } else {
+
+                value++;
+                if (value > M) {
+                    value -= M;
+                }
+
+                if (result.size() < M) {
+                    K -= result.size();
+                } else {
+                    K -= (M-1);
+                }
+
+            }
+
+        }
+        
+        result.push_back(value);
 
     }
 
-    if (K != 0 || size != N) {
+    if (K != 0) {
+
         cout << -1 << endl;
-        cout << result << endl;
+
     } else {
-        cout << result << endl;
+
+        for (int value : result) {
+            cout << value << " ";
+        }
+        cout << endl;
+
     }
 
 }

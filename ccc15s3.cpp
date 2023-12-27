@@ -20,7 +20,7 @@ int main() {
     for (int i = 0; i < P; i++) {
         int N;
         cin >> N;
-        auto it  = available.upper_bound(N);
+        auto it = available.upper_bound(N);
         if (it == available.begin()) {
             break;
         } else {
