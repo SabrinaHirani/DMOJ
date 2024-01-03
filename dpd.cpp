@@ -23,5 +23,6 @@ int main() {
 
     cout << dp[W] << endl;
 
+    return 0;
 
 }
