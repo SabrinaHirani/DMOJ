@@ -1,10 +1,8 @@
-// TODO complete disaster
-
 #include <iostream>
 #include <algorithm>
-#include <limits>
-#include <vector>
+#include <climits>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -12,41 +10,41 @@ int main() {
     int N;
     cin >> N;
 
-    vector<int> heights(N + 1, 0);
+    vector<int> heights(N, 0);
 
-    for (int i = 1; i < N + 1; i++) {
+    for (int i = 0; i < N; i++) {
         cin >> heights[i];
     }
 
-    cout << "Heights: ";
-    for (int i = 1; i < N + 1; i++) {
-        cout << heights[i] << " ";
-    }
-    cout << endl;
+    vector<vector<long long int>> scores1(N, vector<long long int>(N, LLONG_MAX));
+    vector<vector<long long int>> scores2(N, vector<long long int>(N, LLONG_MAX));
 
-    vector<vector<long long int>> scores(N + 1, vector<long long int>(N + 1, LLONG_MAX));
-
-    for (int i = 1; i < N + 2; i++) {
-        for (int j = 1; j < N + 2 - i; j++) {
-            if (i == 1 || i == 2) {
-                scores[i][j] = abs(heights[j + i / 2] - heights[j - (i - 1) / 2]);
+    for (int i = 0; i < N/2+1; i++) {
+        for (int j = i; j < N-i; j++) {
+            if (i <= 0) {
+                scores1[i][j] = abs(heights[j+i] - heights[j-i]);
             } else {
-                scores[i][j] = scores[i - 2][j] + abs(heights[j + i / 2] - heights[j - (i - 1) / 2]);
+                scores1[i][j] = scores1[i-1][j] + abs(heights[j+i] - heights[j-i]);
             }
         }
     }
 
-    cout << "Scores matrix:" << endl;
-    for (int i = 1; i < N + 1; i++) {
-        for (int j = 1; j < N + 1; j++) {
-            cout << scores[i][j] << " ";
+    for (int i = 0; i < N/2+1; i++) {
+        for (int j = i; j < N-i-1; j++) {
+            if (i <= 0) {
+                scores2[i][j] = abs(heights[j+i+1] - heights[j-i]);
+            } else {
+                scores2[i][j] = scores2[i-1][j] + abs(heights[j+i+1] - heights[j-i]);
+            }
         }
-        cout << endl;
     }
 
-    cout << "Minimum symmetric values: ";
-    for (int i = 1; i < N + 1; i++) {
-        cout << *min_element(scores[i].begin(), scores[i].end()) << " ";
+    for (int i = 0; i < N/2; i++) {
+        cout << *min_element(scores1[i].begin(), scores1[i].end()) << " ";
+        cout << *min_element(scores2[i].begin(), scores2[i].end()) << " ";
+    }
+    if (N%2 == 1) {
+        cout << *min_element(scores1[N/2].begin(), scores1[N/2].end()) << " ";
     }
 
     return 0;
