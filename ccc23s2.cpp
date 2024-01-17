@@ -44,7 +44,7 @@ int main() {
         cout << *min_element(scores2[i].begin(), scores2[i].end()) << " ";
     }
     if (N%2 == 1) {
-        cout << *min_element(scores1[N/2].begin(), scores1[N/2].end()) << " ";
+        cout << *min_element(scores1[N/2].begin(), scores1[N/2].end()) << endl;
     }
 
     return 0;
